@@ -5,6 +5,7 @@ import (
 	"github.com/srgyrn/mdns-todo-api/model"
 	"github.com/srgyrn/mdns-todo-api/storage/db"
 	"log"
+	"strings"
 )
 
 type (
@@ -44,6 +45,12 @@ func (h *DBHandler) GetItems() ([]model.Item, error) {
 }
 
 func (h DBHandler) AddNewItem(content string) (model.Item, error) {
+	var item model.Item
+
+	if len(strings.TrimSpace(content)) == 0 {
+		return item, errors.New("content cannot be empty")
+	}
+
 	item, err := h.db.Insert(content, false)
 
 	if !errors.Is(err, nil) {
