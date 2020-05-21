@@ -5,6 +5,7 @@ import (
 	"github.com/srgyrn/mdns-todo-api/model"
 	"github.com/srgyrn/mdns-todo-api/storage/db"
 	"log"
+	"sort"
 	"strings"
 )
 
@@ -20,9 +21,15 @@ type (
 	DBHandler struct {
 		db Gateway
 	}
+
+	ById []model.Item
 )
 
 var ErrNotFound = errors.New("item not found")
+
+func (a ById) Len() int           { return len(a) }
+func (a ById) Less(i, j int) bool { return a[i].ID < a[j].ID }
+func (a ById) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
 
 func NewDBHandler() DBHandler {
 	gw, err := db.NewBoltDB()
@@ -41,6 +48,7 @@ func (h *DBHandler) GetItems() ([]model.Item, error) {
 		return nil, ErrNotFound
 	}
 
+	sort.Sort(ById(items))
 	return items, nil
 }
 
@@ -58,4 +66,9 @@ func (h DBHandler) AddNewItem(content string) (model.Item, error) {
 	}
 
 	return item, nil
+}
+
+func (h DBHandler) DeleteItem(id int) (bool, error) {
+	err := h.db.Delete(id)
+	return err == nil, err
 }

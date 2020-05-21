@@ -7,6 +7,10 @@ import (
 	"testing"
 )
 
+func tearDown(db Gateway) {
+	db = nil
+}
+
 func TestDBHandler_AddNewItem(t *testing.T) {
 	type fields struct {
 		db Gateway
@@ -58,6 +62,8 @@ func TestDBHandler_AddNewItem(t *testing.T) {
 				t.Errorf("AddNewItem() got = %v, want %v", got, tt.want)
 			}
 		})
+
+		tearDown(tt.fields.db)
 	}
 }
 
@@ -114,6 +120,26 @@ func TestDBHandler_GetItems(t *testing.T) {
 				t.Errorf("GetItems() got = %v, want %v", got, tt.want)
 			}
 		})
+
+		tearDown(tt.fields.db)
+	}
+}
+
+func TestDBHandler_DeleteItem(t *testing.T) {
+	db := initDbMock([]string{"buy some milk", "get mail"})
+	defer tearDown(db)
+	handler := DBHandler{
+		db: db,
+	}
+
+	got, err := handler.DeleteItem(1)
+	if err != nil {
+		t.Errorf("DeleteItem error = %v", err)
+	}
+
+	want := true
+	if got != want {
+		t.Errorf("DeleteItem() failed. got = %v, want = %v", got, want)
 	}
 }
 
