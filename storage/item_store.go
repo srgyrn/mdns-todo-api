@@ -4,22 +4,14 @@ import (
 	"errors"
 	"github.com/srgyrn/mdns-todo-api/model"
 	"github.com/srgyrn/mdns-todo-api/storage/db"
+	"github.com/srgyrn/mdns-todo-api/storage/internal"
 	"log"
 	"sort"
 	"strings"
 )
-
 type (
-	Gateway interface {
-		FindAll() ([]model.Item, error)
-		Find(id int) (model.Item, error)
-		Insert(content string, isCompleted bool) (model.Item, error)
-		Update(id int, content string, isCompleted bool) (model.Item, error)
-		Delete(id int) error
-	}
-
 	DBHandler struct {
-		db Gateway
+		db internal.Gateway
 	}
 
 	ById []model.Item

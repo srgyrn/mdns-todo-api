@@ -3,13 +3,13 @@ package suitetest
 import (
 	"errors"
 	"github.com/srgyrn/mdns-todo-api/model"
-	"github.com/srgyrn/mdns-todo-api/storage"
+	"github.com/srgyrn/mdns-todo-api/storage/internal"
 	"reflect"
 	"testing"
 )
 
 type GatewayTest struct {
-	GW storage.Gateway
+	GW internal.Gateway
 
 	Before func()
 	After func()
@@ -32,7 +32,7 @@ func Gateway(t *testing.T, gwt GatewayTest) {
 	gwt.After()
 }
 
-func validInsert(gw storage.Gateway) func(*testing.T) {
+func validInsert(gw internal.Gateway) func(*testing.T) {
 	return func(t *testing.T) {
 		want := model.Item{
 			ID:          1,
@@ -50,7 +50,7 @@ func validInsert(gw storage.Gateway) func(*testing.T) {
 	}
 }
 
-func find(gw storage.Gateway) func(t *testing.T) {
+func find(gw internal.Gateway) func(t *testing.T) {
 	return func(t *testing.T) {
 		want := model.Item{
 			ID:          1,
@@ -68,7 +68,7 @@ func find(gw storage.Gateway) func(t *testing.T) {
 	}
 }
 
-func invalidFind(gw storage.Gateway) func(t *testing.T) {
+func invalidFind(gw internal.Gateway) func(t *testing.T) {
 	return func(t *testing.T) {
 		got, err := gw.Find(10000)
 		if !errors.Is(err,  nil) {
@@ -82,7 +82,7 @@ func invalidFind(gw storage.Gateway) func(t *testing.T) {
 	}
 }
 
-func findAll(gw storage.Gateway) func(t *testing.T) {
+func findAll(gw internal.Gateway) func(t *testing.T) {
 	return func(t *testing.T) {
 		want := []model.Item{
 			{
@@ -103,7 +103,7 @@ func findAll(gw storage.Gateway) func(t *testing.T) {
 	}
 }
 
-func validUpdate(gw storage.Gateway) func(t *testing.T) {
+func validUpdate(gw internal.Gateway) func(t *testing.T) {
 	content := "make a sandwich"
 	return func(t *testing.T) {
 		want := model.Item{
@@ -122,7 +122,7 @@ func validUpdate(gw storage.Gateway) func(t *testing.T) {
 	}
 }
 
-func invalidUpdate(gw storage.Gateway) func(t *testing.T) {
+func invalidUpdate(gw internal.Gateway) func(t *testing.T) {
 	content := "make a sandwich"
 	return func(t *testing.T) {
 		if _, err := gw.Update(10000, content, true); errors.Is(err, nil) {
@@ -131,7 +131,7 @@ func invalidUpdate(gw storage.Gateway) func(t *testing.T) {
 	}
 }
 
-func validDelete(gw storage.Gateway) func(t *testing.T) {
+func validDelete(gw internal.Gateway) func(t *testing.T) {
 	return func(t *testing.T) {
 		if err := gw.Delete(1); !errors.Is(err, nil) {
 			t.Errorf("delete operation error: %v", err)
