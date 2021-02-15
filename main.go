@@ -3,10 +3,12 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/srgyrn/mdns-todo-api/storage"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"strconv"
+
+	"github.com/srgyrn/mdns-todo-api/storage"
 )
 
 func main() {
@@ -32,8 +34,21 @@ func main() {
 
 			successfulResponseListener(w, result)
 		case http.MethodPost:
-			r.FormValue("content")
-			result, err := db.AddNewItem(r.FormValue("content"))
+			type req struct  {
+				Content string `json:"content"`
+			}
+			b, err := ioutil.ReadAll(r.Body)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+			}
+
+			var bod req
+			err = json.Unmarshal(b, &bod)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+			}
+
+			result, err := db.AddNewItem(bod.Content)
 
 			if err != nil {
 				http.Error(w, err.Error(), http.StatusBadRequest)

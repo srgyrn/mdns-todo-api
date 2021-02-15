@@ -2,12 +2,13 @@ package storage
 
 import (
 	"errors"
-	"github.com/srgyrn/mdns-todo-api/model"
-	"github.com/srgyrn/mdns-todo-api/storage/db"
-	"github.com/srgyrn/mdns-todo-api/storage/internal"
 	"log"
 	"sort"
 	"strings"
+
+	"github.com/srgyrn/mdns-todo-api/model"
+	"github.com/srgyrn/mdns-todo-api/storage/db"
+	"github.com/srgyrn/mdns-todo-api/storage/internal"
 )
 type (
 	DBHandler struct {
