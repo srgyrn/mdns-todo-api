@@ -15,7 +15,7 @@ func main() {
 	uri := "/items"
 	db := storage.NewDBHandler()
 
-	http.HandleFunc("/health/", func(w http.ResponseWriter, r *http.Request) {
+	http.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
 		successfulResponseListener(w, "success")
 	})
 
